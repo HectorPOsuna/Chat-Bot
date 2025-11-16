@@ -1,0 +1,25 @@
+version: "3.9"
+
+services:
+  ollama:
+    build: ./ollama
+    container_name: ollama_service
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: unless-stopped
+
+  backend:
+    build: ./backend
+    container_name: chatbot_backend
+    ports:
+      - "3000:3000"
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+    depends_on:
+      - ollama
+    restart: unless-stopped
+
+volumes:
+  ollama_data:
