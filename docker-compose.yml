@@ -3,22 +3,26 @@ version: "3.9"
 services:
   ollama:
     build: ./ollama
-    container_name: ollama_service
-    ports:
-      - "11434:11434"
+    container_name: ollama
     volumes:
       - ollama_data:/root/.ollama
-    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434"]
+      interval: 5s
+      retries: 20
 
-  backend:
-    build: ./backend
-    container_name: chatbot_backend
+  server:
+    build: ./server
+    container_name: chatbot-server
+    depends_on:
+      ollama:
+        condition: service_healthy
+    environment:
+      OLLAMA_HOST: "http://ollama:11434"
     ports:
       - "3000:3000"
-    environment:
-      OLLAMA_HOST: http://ollama:11434
-    depends_on:
-      - ollama
     restart: unless-stopped
 
 volumes:
