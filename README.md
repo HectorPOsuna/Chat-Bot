@@ -64,36 +64,40 @@ Todo está dentro de Docker.
 
 # ⚙ Instalación y uso
 
-#!/bin/bash
+🔧 🟦 PASO 1 — Clonar el repositorio
+git clone https://github.com/HectorPOsuna/Chat-Bot
+cd Chat-Bot
 
-echo "=== 📦 1) Clonando repositorio ==="
-git clone https://github.com/HectorPOsuna/Chat-Bot && cd Chat-Bot
-
-echo "=== 🐋 2) Iniciando solo el contenedor de Ollama ==="
+🐳 🟦 PASO 2 — Iniciar únicamente el servicio de Ollama
 docker compose up -d ollama
 
-echo "=== ⏳ 3) Esperando a que el servidor Ollama esté listo ==="
+Verificar el estado inicial:
+docker logs -f ollama
+
+⏳ 🟦 PASO 3 — Esperar a que Ollama esté listo
 until docker exec ollama curl -s http://localhost:11434/api/tags > /dev/null 2>&1; do
-  echo "   → Ollama aún no responde, reintentando..."
-  sleep 3
+  echo "Ollama no responde todavía... reintentando...";
+  sleep 3;
 done
 
-echo "=== 🧠 4) Precargando modelo llama3.2:3b ==="
+🧠 🟦 PASO 4 — Precargar el modelo (llama3.2:3b)
 docker exec -it ollama ollama pull llama3.2:3b
 
-echo "=== 🔍 5) Verificando modelos instalados ==="
+Verificar que se descargó correctamente:
 docker exec -it ollama ollama list
 
-echo "=== 🚀 6) Construyendo e iniciando todos los servicios ==="
+Debería aparecer:
+llama3.2:3b
+
+🚀 🟦 PASO 5 — Construir e iniciar todos los servicios
 docker compose up -d --build
 
-echo "=== 📡 7) Verificando estado de contenedores ==="
+Verificar que ambos contenedores están activos:
 docker ps
 
-echo "=== 🧪 8) Probando conexión al API del chatbot ==="
+📡 🟦 PASO 6 — Probar la API del chatbot
 curl -X POST http://localhost:3000/chat \
   -H "Content-Type: application/json" \
-  -d '{"prompt":"Hola, ¿estás funcionando?"}'
+  -d '{"prompt": "Hola chatbot, ¿estás funcionando?"}'
 
-echo "=== ✔ Instalación finalizada ==="
 
