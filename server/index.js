@@ -17,7 +17,7 @@ app.post("/chat", async (req, res) =>{
         const response = await fetch("http://localhost:11434/api/generate",{
             method: "POST",
             body: JSON.stringify({
-                model: "llama3.1",
+                model: "llama3.2:3b",
                 prompt: message,
                 stream: false
             }),
