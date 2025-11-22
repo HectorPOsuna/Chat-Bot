@@ -29,7 +29,7 @@ app.post("/chat", async (req, res) =>{
     
     } catch (error) {
         console.error("Error llamando a Ollama", error);
-        res.status(500).json({ error: "Error al generar respuesta" });
+        res.status(500).json({ error: "Error al generar respuesta"});
     }
 });
 
