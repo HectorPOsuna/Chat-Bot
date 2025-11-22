@@ -10,7 +10,7 @@ app.post("/chat", async (req, res) =>{
     const { message } = req.body;
 
     if(!message){
-        req.status(400).json({error: "Falta 'message' en el body"});
+        res.status(400).json({error: "Falta 'message' en el body"});
     }
 
     try {
