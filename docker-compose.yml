@@ -1,7 +1,9 @@
 services:
   ollama:
     container_name: ollama
-    image: ollama/ollama:latest
+    build:
+      context: ./ollama
+      dockerfile: Dockerfile
     restart: unless-stopped
     ports:
       - "11434:11434"
@@ -10,14 +12,15 @@ services:
     environment:
       OLLAMA_HOST: "0.0.0.0"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      test: ["CMD-SHELL", "curl -sf http://localhost:11434/api/tags || exit 1"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 12
+      start_period: 40s
 
   api:
-    container_name: api
-    build: ./api
+    container_name: server
+    build: ./server
     restart: unless-stopped
     ports:
       - "3000:3000"
@@ -27,7 +30,7 @@ services:
     environment:
       OLLAMA_URL: "http://ollama:11434"
     volumes:
-      - ./api:/usr/src/app
+      - ./server:/usr/src/app
 
 volumes:
   ollama_data:
