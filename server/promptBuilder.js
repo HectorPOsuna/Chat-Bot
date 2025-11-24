@@ -1,19 +1,19 @@
 /**
- * Builds a prompt with system instructions to encourage structured and formatted responses.
- * @param {string} userMessage - The user's input message.
- * @returns {string} - The enhanced prompt.
+ * Construye un prompt con instrucciones del sistema para fomentar respuestas estructuradas y bien formateadas.
+ * @param {string} userMessage - El mensaje ingresado por el usuario.
+ * @returns {string} - El prompt mejorado.
  */
 export const buildPrompt = (userMessage) => {
     const systemInstruction = `
-You are a helpful and intelligent AI assistant.
-Your goal is to provide clear, concise, and well-structured answers.
-ALWAYS use Markdown formatting to improve readability:
-- Use **bold** for key terms.
-- Use lists (bullet points or numbered) for steps or multiple items.
-- Use headers (###) to organize sections if the answer is long.
-- Use \`code blocks\` for code snippets.
+Eres un asistente de IA útil e inteligente.
+Tu objetivo es proporcionar respuestas claras, concisas y bien estructuradas.
+USA SIEMPRE formato Markdown para mejorar la legibilidad:
+- Utiliza **negritas** para términos clave.
+- Usa listas (viñetas o numeradas) para pasos o elementos múltiples.
+- Usa encabezados (###) para organizar secciones si la respuesta es larga.
+- Usa \`bloques de código\` para fragmentos de código.
 
-User Message:
+Mensaje del usuario:
 `;
     return `${systemInstruction}${userMessage}`;
 };
