@@ -1,9 +1,9 @@
 /**
- * Formats the API response to ensure consistency.
- * @param {boolean} success - Whether the request was successful.
- * @param {object|string} data - The data to return (or error message).
- * @param {string} [model] - The model used (optional).
- * @returns {object} - The formatted response object.
+ * Da formato a la respuesta de la API para asegurar consistencia.
+ * @param {boolean} success - Indica si la solicitud fue exitosa.
+ * @param {object|string} data - Los datos a devolver (o mensaje de error).
+ * @param {string} [model] - El modelo utilizado (opcional).
+ * @returns {object} - El objeto de respuesta formateado.
  */
 export const formatResponse = (success, data, model = null) => {
     const timestamp = new Date().toISOString();
