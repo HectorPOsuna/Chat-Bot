@@ -31,7 +31,6 @@ app.post("/chat", async (req, res) => {
 
         const data = await response.json();
 
-        // Validación por si Ollama devuelve un error
         if (!data || !data.response) {
             return res.status(500).json(formatResponse(false, {
                 message: "Ollama no devolvió una respuesta válida",
