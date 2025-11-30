@@ -1,0 +1,100 @@
+/* --- Fondo general --- */
+body {
+  background: #1e1e1e;
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: white;
+}
+
+/* --- Contenedor principal --- */
+.chat-container {
+  max-width: 500px;
+  margin: 40px auto;
+  background: #2a2a2a;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+/* --- Título --- */
+.title {
+  text-align: center;
+  font-size: 26px;
+  margin-bottom: 20px;
+}
+
+/* --- Caja de chat --- */
+.chat-box {
+  height: 350px;
+  overflow-y: auto;
+  padding-right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Scroll elegante */
+.chat-box::-webkit-scrollbar {
+  width: 6px;
+}
+.chat-box::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 4px;
+}
+
+/* --- Burbujas estilo ChatGPT --- */
+.message {
+  max-width: 80%;
+  padding: 12px 15px;
+  border-radius: 12px;
+  line-height: 1.4;
+  font-size: 15px;
+}
+
+.user {
+  align-self: flex-end;
+  background-color: #4caf50;
+  color: white;
+  border-bottom-right-radius: 0;
+}
+
+.bot {
+  align-self: flex-start;
+  background-color: #3f3f3f;
+  border-bottom-left-radius: 0;
+}
+
+/* --- Caja de entrada --- */
+.input-box {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+}
+
+.input-box input {
+  flex-grow: 1;
+  padding: 12px;
+  background: #1e1e1e;
+  color: white;
+  border: 1px solid #555;
+  border-radius: 8px;
+  outline: none;
+  transition: 0.2s;
+}
+
+.input-box input:focus {
+  border-color: #4caf50;
+}
+
+.input-box button {
+  background: #4caf50;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.input-box button:hover {
+  background: #43a047;
+}
