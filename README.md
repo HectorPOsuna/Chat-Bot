@@ -342,7 +342,7 @@ Las contribuciones son bienvenidas. Por favor:
 
 ---
 
-## 👨‍💻 Autores
+## 👨‍💻 Autor
 
 **Héctor P. Osuna**  
 GitHub: [@HectorPOsuna](https://github.com/HectorPOsuna)
