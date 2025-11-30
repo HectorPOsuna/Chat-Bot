@@ -63,8 +63,8 @@ Para este proyecto se eligió un modelo híbrido compuesto por **Scrum + Espiral
 ## 3. Aplicación de Scrum dentro del proyecto
 
 ### 📌 Roles
-- **Product Owner:** Estudiante (desarrollador principal)
-- **Scrum Master:** Estudiante
+- **Product Owner:** Director (desarrollador principal)
+- **Scrum Master:** Maestros
 - **Development Team:** Estudiante
 
 ### 📌 Artefactos
