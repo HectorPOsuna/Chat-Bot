@@ -1,348 +1,429 @@
-# 🤖 Chatbot IA con Node.js + Ollama (Dockerizado)
+# Asistente Académico Inteligente "AguiAI" para Consultas Estudiantiles
 
-Este proyecto implementa un **chatbot de Inteligencia Artificial** completamente funcional con soporte para **contexto conversacional**, utilizando:
+<div align="center">
 
-- **Ollama** → Ejecuta modelos LLM localmente (llama3.1, phi3, mistral, etc.)
-- **Node.js + Express** → API REST del chatbot con gestión de contexto
-- **Docker + Docker Compose** → Despliegue simplificado sin instalaciones locales
+![AguiAI](https://img.shields.io/badge/AguiAI-Asistente%20Acad%C3%A9mico-blue)
+![Node.js](https://img.shields.io/badge/Node.js-v18+-green)
+![React](https://img.shields.io/badge/React-v19-blue)
+![Ollama](https://img.shields.io/badge/Ollama-llama3.2-orange)
+![Docker](https://img.shields.io/badge/Docker-Opcional-blue)
 
-El entorno completo corre en contenedores, garantizando portabilidad, facilidad de uso y despliegue sencillo.
+**Sistema de asistencia académica inteligente con capacidades de RAG y entrenamiento por prompts**
 
----
-
-## 🚀 Características
-
-✅ **Chatbot IA completamente funcional** con respuestas en formato Markdown  
-✅ **Contexto conversacional** - Mantiene el historial de la conversación  
-✅ **Respuestas estructuradas** - Formato JSON estandarizado  
-✅ **Detección automática de entorno** - Docker o local  
-✅ **API REST** lista para consumir desde cualquier cliente  
-✅ **Retrocompatible** - Funciona con y sin historial  
-✅ **Stateless** - No requiere base de datos ni sesiones  
-✅ **Compatible** con Windows / Linux / Mac  
-✅ **100% local y gratuito**
+</div>
 
 ---
 
-## 🏗 Arquitectura del Proyecto
+## 📋 Tabla de Contenidos
 
-```
-chat-bot/
-├── docker-compose.yml          # Orquestación de servicios
-├── server/
-│   ├── Dockerfile
-│   ├── index.js                # Servidor principal
-│   ├── contextManager.js       # Gestión de historial
-│   ├── promptBuilder.js        # Construcción de prompts
-│   ├── responseFormatter.js    # Formato de respuestas
-│   ├── package.json
-│   └── package-lock.json
-└── ollama/
-    ├── Dockerfile
-    └── entrypoint.sh
-```
-
-### Servicios
-
-| Servicio | Puerto | Descripción |
-|---------|--------|-------------|
-| **Ollama** | 11434 | Ejecuta el modelo LLM (llama3.1:latest) |
-| **API Server** | 3000 | API REST con soporte de contexto conversacional |
+1. [Definición del Modelo](#definición-del-modelo)
+   - [Antecedentes](#antecedentes)
+   - [Metodología Previa](#metodología-previa)
+2. [Tecnologías Utilizadas](#tecnologías-utilizadas)
+3. [Funcionamiento del Sistema](#funcionamiento-del-sistema)
+4. [Arquitectura e Integración](#arquitectura-e-integración)
+5. [Instalación](#instalación)
+6. [Validación de Funcionalidades](#validación-de-funcionalidades)
+7. [Uso del Sistema](#uso-del-sistema)
 
 ---
 
-## 🧩 Requisitos Previos
+## 🎓 Definición del Modelo
 
-Antes de iniciar, necesitas:
+### Antecedentes
 
-- **Docker**: https://www.docker.com/get-started  
-- **Docker Compose** (incluido en Docker Desktop)
+#### Semblanza
 
-**No necesitas instalar:**
+**AguiAI** (Asistente de Guía Inteligente con IA) es un sistema de asistencia académica desarrollado para la **Facultad de Informática Mazatlán** de la **Universidad Autónoma de Sinaloa**. El proyecto surge como respuesta a la necesidad de proporcionar información institucional precisa, consistente y accesible las 24 horas del día a estudiantes, aspirantes y visitantes.
 
-❌ Node.js  
-❌ Ollama  
-❌ NPM  
-❌ Modelos adicionales  
+El sistema integra tecnologías de inteligencia artificial de última generación, específicamente modelos de lenguaje grandes (LLMs) ejecutados localmente mediante Ollama, combinados con técnicas avanzadas de recuperación de información (RAG - Retrieval-Augmented Generation) y entrenamiento por prompts predefinidos.
 
-Todo está dentro de Docker.
+#### Motivación
 
----
+La motivación principal para el desarrollo de AguiAI incluye:
 
-## ⚙️ Instalación y Uso
+1. **Accesibilidad de Información**: Proporcionar acceso inmediato a información institucional sin depender de horarios de atención administrativa.
 
-### 🔧 PASO 1 — Clonar el repositorio
-```bash
-git clone https://github.com/HectorPOsuna/Chat-Bot
-cd Chat-Bot
-```
+2. **Consistencia en Respuestas**: Garantizar que las preguntas frecuentes reciban respuestas uniformes y precisas mediante el sistema de training prompts.
 
-### 🐳 PASO 2 — Iniciar el servicio de Ollama
-```bash
-docker compose up -d ollama
-```
+3. **Escalabilidad**: Capacidad de manejar múltiples consultas simultáneas sin degradación del servicio.
 
-Verificar el estado:
-```bash
-docker logs -f ollama
-```
+4. **Actualización Dinámica**: Facilitar la actualización de información mediante la carga de documentos PDF (manuales, reglamentos) y la gestión de prompts de entrenamiento.
 
-### ⏳ PASO 3 — Esperar a que Ollama esté listo
-```bash
-until docker exec ollama curl -s http://localhost:11434/api/tags > /dev/null 2>&1; do
-  echo "Ollama no responde todavía... reintentando...";
-  sleep 3;
-done
-```
+5. **Privacidad y Soberanía de Datos**: Ejecutar el modelo de IA localmente sin depender de servicios externos, garantizando la privacidad de las consultas estudiantiles.
 
-### 🧠 PASO 4 — Precargar el modelo (llama3.1:latest)
-```bash
-docker exec -it ollama ollama pull llama3.1:latest
-```
+6. **Reducción de Carga Administrativa**: Automatizar respuestas a consultas repetitivas, permitiendo al personal administrativo enfocarse en tareas más complejas.
 
-Verificar que se descargó correctamente:
-```bash
-docker exec -it ollama ollama list
-```
+### Metodología Previa
 
-Debería aparecer: `llama3.1:latest`
+El desarrollo de AguiAI se fundamenta en una arquitectura de tres capas que integra múltiples tecnologías modernas:
 
-### 🚀 PASO 5 — Construir e iniciar todos los servicios
-```bash
-docker compose up -d --build
-```
+#### Tecnologías Utilizadas
 
-Verificar que ambos contenedores están activos:
-```bash
-docker ps
-```
+##### Frontend
+- **React 19**: Biblioteca de JavaScript para construir interfaces de usuario interactivas
+- **Vite**: Herramienta de construcción rápida para desarrollo frontend
+- **Axios**: Cliente HTTP para comunicación con el backend
+- **React-Markdown**: Renderizado de respuestas formateadas en Markdown
+
+##### Backend
+- **Node.js 18+**: Entorno de ejecución de JavaScript del lado del servidor
+- **Express**: Framework web minimalista para Node.js
+- **Multer**: Middleware para manejo de archivos multipart/form-data
+- **PDF-Parse**: Extracción de texto de documentos PDF
+- **Natural**: Procesamiento de lenguaje natural para tokenización
+
+##### Inteligencia Artificial
+- **Ollama**: Plataforma para ejecutar modelos de lenguaje grandes localmente
+  - **llama3.2:3b**: Modelo principal para generación de respuestas
+  - **nomic-embed-text**: Modelo para generación de embeddings vectoriales
+
+##### Infraestructura (Opcional)
+- **Docker**: Containerización de servicios
+  - **Nota Importante**: La implementación en Docker es una **alternativa** a hospedar Ollama localmente. El sistema puede ejecutarse completamente en la máquina local sin Docker, simplemente instalando Ollama directamente en el sistema operativo.
+
+##### Almacenamiento
+- **Sistema de Archivos**: Almacenamiento de documentos procesados y embeddings en formato JSON
+- **Estructura de Datos**: Organización jerárquica de PDFs, documentos procesados y vectores de embeddings
 
 ---
 
-## 📡 Documentación de la API
+## 🔧 Tecnologías Utilizadas
 
-### Endpoint Principal
+### 1. React (Frontend)
 
-**URL:** `POST http://localhost:3000/chat`  
-**Content-Type:** `application/json`
+**Función**: Interfaz de usuario interactiva para el chatbot.
 
-### Formato de Request
+**Características Implementadas**:
+- Componentes funcionales con Hooks (useState, useEffect, useRef)
+- Gestión de estado para mensajes, historial conversacional y configuración
+- Renderizado condicional de respuestas en Markdown
+- Auto-scroll a nuevos mensajes
+- Toggle para activar/desactivar RAG y Training
 
-#### Sin Contexto (Mensaje Simple)
-```json
-{
-  "message": "¿Qué es Node.js?"
-}
+**Integración**: Se comunica con el backend mediante peticiones HTTP (Axios) al endpoint `/chat`.
+
+### 2. Vite (Build Tool)
+
+**Función**: Herramienta de construcción y desarrollo para el frontend.
+
+**Ventajas**:
+- Hot Module Replacement (HMR) instantáneo
+- Build optimizado para producción
+- Configuración mínima
+- Soporte nativo para ES modules
+
+**Uso**: `npm run dev` para desarrollo, `npm run build` para producción.
+
+### 3. Node.js + Express (Backend)
+
+**Función**: Servidor API que coordina todas las operaciones del sistema.
+
+**Responsabilidades**:
+- Gestión de endpoints REST
+- Procesamiento de PDFs
+- Coordinación entre Training Prompts, RAG y Ollama
+- Manejo de archivos y almacenamiento
+- Gestión de CORS para comunicación con frontend
+
+**Arquitectura**:
+```
+index.js (Servidor principal)
+├── routes/
+│   ├── documents.js (Gestión de PDFs)
+│   └── training.js (Gestión de prompts)
+└── rag/
+    ├── pdf-processor.js
+    ├── chunker.js
+    ├── embeddings.js
+    ├── vector-store.js
+    ├── rag-engine.js
+    ├── prompt-matcher.js
+    └── training-manager.js
 ```
 
-#### Con Contexto (Conversación Continua)
-```json
-{
-  "message": "¿Cuál fue el segundo consejo?",
-  "history": [
-    {
-      "role": "user",
-      "content": "Dame 3 consejos para programar mejor"
-    },
-    {
-      "role": "assistant",
-      "content": "1. **Escribe código limpio**\n2. **Usa control de versiones**\n3. **Escribe tests**"
-    }
-  ]
-}
+### 4. Ollama (Motor de IA)
+
+**Función**: Ejecuta modelos de lenguaje grandes localmente sin requerir conexión a internet.
+
+**Modelos Utilizados**:
+
+#### llama3.2:3b
+- **Propósito**: Generación de respuestas conversacionales
+- **Parámetros**: 3 mil millones
+- **Uso**: Respuestas a preguntas generales y contextualizadas
+
+#### nomic-embed-text
+- **Propósito**: Generación de embeddings vectoriales (768 dimensiones)
+- **Uso**: 
+  - Matching de similitud para Training Prompts
+  - Búsqueda semántica en documentos RAG
+
+**Ventajas**:
+- Ejecución local (privacidad garantizada)
+- Sin costos por uso
+- Sin límites de rate
+- Respuestas rápidas (optimizado para hardware local)
+
+**Nota sobre Docker**: Ollama puede ejecutarse de dos formas:
+1. **Instalación Local** (Recomendado para desarrollo): Instalar Ollama directamente en Windows/Linux/macOS
+2. **Docker Container** (Alternativa): Ejecutar Ollama en un contenedor Docker para aislamiento
+
+### 5. Docker (Opcional)
+
+**Función**: Containerización de servicios para despliegue consistente.
+
+**Servicios Containerizados**:
+- `ollama`: Servicio de IA
+- `api`: Backend Node.js
+- `frontend`: Aplicación React (opcional)
+
+**Ventajas**:
+- Entorno reproducible
+- Fácil despliegue en diferentes sistemas
+- Aislamiento de dependencias
+
+**Importante**: Docker es **opcional**. El sistema funciona perfectamente sin Docker instalando Ollama y Node.js directamente en el sistema operativo.
+
+### 6. Sistema RAG (Retrieval-Augmented Generation)
+
+**Función**: Permite entrenar la IA con documentos PDF institucionales.
+
+**Pipeline de Procesamiento**:
+```
+PDF → Extracción de Texto → Limpieza → Chunking → Embeddings → Vector Store
 ```
 
-### Formato de Response
+**Componentes**:
+1. **PDF Processor**: Extrae texto de PDFs usando pdf-parse
+2. **Chunker**: Divide texto en fragmentos de ~1000 caracteres con overlap
+3. **Embeddings Generator**: Genera vectores usando nomic-embed-text
+4. **Vector Store**: Almacena y busca por similitud coseno
+5. **RAG Engine**: Coordina búsqueda y generación de respuestas
 
-#### Respuesta Exitosa
-```json
-{
-  "status": "success",
-  "data": {
-    "reply": "**Node.js** es un entorno de ejecución...",
-    "model": "llama3.1:latest",
-    "timestamp": "2025-11-30T12:00:00.000Z"
-  }
-}
-```
+### 7. Training Prompts
 
-#### Respuesta de Error
-```json
-{
-  "status": "error",
-  "error": {
-    "message": "Falta 'message' en el body",
-    "details": null,
-    "timestamp": "2025-11-30T12:00:00.000Z"
-  }
-}
-```
+**Función**: Sistema de respuestas predefinidas con matching inteligente.
 
-### Parámetros
+**Características**:
+- Matching por similitud de embeddings (umbral 85%)
+- Soporte para variaciones de preguntas
+- Categorización de prompts
+- CRUD completo mediante API REST
+- Prioridad sobre RAG y Ollama
 
-| Parámetro | Tipo | Requerido | Descripción |
-|-----------|------|-----------|-------------|
-| `message` | string | ✅ Sí | El mensaje del usuario |
-| `history` | array | ❌ No | Historial de mensajes previos |
-
-### Formato del Historial
-
-El array `history` debe contener objetos con:
-
-- **`role`**: `"user"` o `"assistant"`
-- **`content`**: Texto del mensaje
+**Almacenamiento**: JSON en `server/data/training-prompts.json`
 
 ---
 
-## 💡 Ejemplos de Uso
+## ⚙️ Funcionamiento del Sistema
 
-### Ejemplo 1: Mensaje Simple (Sin Contexto)
+### Flujo de Procesamiento de Consultas
 
-**Request:**
-```bash
-curl -X POST http://localhost:3000/chat \
-  -H "Content-Type: application/json" \
-  -d '{"message": "Explícame qué es Docker"}'
+```
+Usuario → Frontend (React) → Backend (Express) → Procesamiento Inteligente → Respuesta
+                                                          ↓
+                                    ┌─────────────────────┴─────────────────────┐
+                                    │                                           │
+                            1. Training Prompts                          2. RAG System
+                            (Prioridad Alta)                         (Prioridad Media)
+                                    │                                           │
+                            Matching ≥85%?                              Documentos?
+                                    │                                           │
+                                   Sí                                          Sí
+                                    │                                           │
+                            Respuesta Instantánea                    Búsqueda Semántica
+                                    │                                           │
+                                    └─────────────────────┬─────────────────────┘
+                                                          │
+                                                    3. Ollama Básico
+                                                   (Prioridad Baja)
+                                                          │
+                                                  Conocimiento General
 ```
 
-**Response:**
-```json
-{
-  "status": "success",
-  "data": {
-    "reply": "**Docker** es una plataforma de contenedores...",
-    "model": "llama3.1:latest",
-    "timestamp": "2025-11-30T12:00:00.000Z"
-  }
-}
+### 1. Training Prompts (Primera Prioridad)
+
+**Proceso**:
+1. Usuario envía pregunta
+2. Sistema genera embedding de la pregunta
+3. Compara con embeddings de prompts almacenados
+4. Si similitud ≥ 85%, retorna respuesta predefinida
+5. Tiempo de respuesta: <0.5 segundos
+
+**Ventajas**:
+- Respuestas instantáneas
+- Consistencia garantizada
+- No consume recursos de Ollama
+
+### 2. Sistema RAG (Segunda Prioridad)
+
+**Proceso**:
+1. Si no hay match en Training Prompts
+2. Genera embedding de la pregunta
+3. Busca top-3 chunks más similares en documentos
+4. Construye prompt con contexto recuperado
+5. Envía a Ollama con contexto
+6. Retorna respuesta contextualizada
+
+**Ventajas**:
+- Respuestas basadas en documentos oficiales
+- Actualizable mediante carga de PDFs
+- Cita fuentes de información
+
+### 3. Ollama Básico (Tercera Prioridad)
+
+**Proceso**:
+1. Si no hay match en Training ni contexto en RAG
+2. Envía pregunta con prompt básico institucional
+3. Ollama genera respuesta con conocimiento general
+4. Retorna respuesta
+
+**Uso**: Preguntas generales no cubiertas por Training o RAG.
+
+---
+
+## 🏗️ Arquitectura e Integración
+
+### Diagrama de Arquitectura
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                         FRONTEND (React)                         │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐          │
+│  │   Chat UI    │  │ PDF Uploader │  │   Settings   │          │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘          │
+│         │                  │                  │                   │
+│         └──────────────────┴──────────────────┘                   │
+│                            │ HTTP (Axios)                         │
+└────────────────────────────┼──────────────────────────────────────┘
+                             │
+┌────────────────────────────┼──────────────────────────────────────┐
+│                    BACKEND (Node.js + Express)                    │
+│                            │                                       │
+│  ┌─────────────────────────┴─────────────────────────┐           │
+│  │              API Routes (Express)                  │           │
+│  │  /chat  /training  /documents  /health            │           │
+│  └─────────────────────┬───────────────────────────┬─┘           │
+│                        │                           │              │
+│  ┌─────────────────────┴──────┐    ┌──────────────┴────────┐    │
+│  │   Training Matcher         │    │    RAG Engine          │    │
+│  │  - prompt-matcher.js       │    │  - pdf-processor.js    │    │
+│  │  - training-manager.js     │    │  - chunker.js          │    │
+│  │  - Similarity Search       │    │  - embeddings.js       │    │
+│  └────────────┬───────────────┘    │  - vector-store.js     │    │
+│               │                     └──────────┬─────────────┘    │
+│               │                                │                   │
+│               └────────────────┬───────────────┘                   │
+│                                │                                   │
+└────────────────────────────────┼───────────────────────────────────┘
+                                 │ HTTP API
+┌────────────────────────────────┼───────────────────────────────────┐
+│                         OLLAMA (Motor IA)                          │
+│                                │                                    │
+│  ┌─────────────────────────────┴──────────────────────────┐       │
+│  │                    API Endpoints                        │       │
+│  │  /api/chat  /api/generate  /api/embeddings            │       │
+│  └─────────────────────────┬────────────────────────────┬─┘       │
+│                            │                            │          │
+│  ┌─────────────────────────┴──────┐    ┌──────────────┴────────┐ │
+│  │      llama3.2:3b               │    │  nomic-embed-text      │ │
+│  │  (Generación de Respuestas)    │    │  (Embeddings 768D)     │ │
+│  └────────────────────────────────┘    └───────────────────────┘ │
+│                                                                    │
+│  Ejecutándose: Local o Docker Container                           │
+└────────────────────────────────────────────────────────────────────┘
 ```
 
-### Ejemplo 2: Conversación con Contexto
+### Integración entre Tecnologías
 
-**Primera petición:**
-```bash
-curl -X POST http://localhost:3000/chat \
-  -H "Content-Type: application/json" \
-  -d '{"message": "Dame 5 lenguajes de programación populares"}'
+#### Frontend ↔ Backend
+- **Protocolo**: HTTP/REST
+- **Formato**: JSON
+- **Cliente**: Axios
+- **Endpoints**: `/chat`, `/training`, `/documents`
+
+#### Backend ↔ Ollama
+- **Protocolo**: HTTP
+- **Endpoints Ollama**:
+  - `/api/chat`: Conversaciones con contexto
+  - `/api/generate`: Generación simple
+  - `/api/embeddings`: Generación de vectores
+- **Formato**: JSON con streaming opcional
+
+#### Flujo de Datos RAG
+```
+PDF File → pdf-parse → Text → Natural (Tokenizer) → Chunks
+                                                       ↓
+                                              Ollama (embeddings)
+                                                       ↓
+                                              Vector Store (JSON)
+                                                       ↓
+                                              Similarity Search
+                                                       ↓
+                                              Context → Ollama (chat)
 ```
 
-**Segunda petición (con historial):**
-```bash
-curl -X POST http://localhost:3000/chat \
-  -H "Content-Type: application/json" \
-  -d '{
-    "message": "¿Cuál de esos es mejor para backend?",
-    "history": [
-      {"role": "user", "content": "Dame 5 lenguajes de programación populares"},
-      {"role": "assistant", "content": "1. Python\n2. JavaScript\n3. Java\n4. C++\n5. Go"}
-    ]
-  }'
+#### Flujo de Training Prompts
+```
+User Question → Ollama (embedding) → Similarity Comparison
+                                            ↓
+                                    Training Prompts (JSON)
+                                            ↓
+                                    Match ≥85%? → Predefined Answer
 ```
 
 ---
 
-## 🔧 Configuración Avanzada
+## � Documentación Adicional
 
-### Variables de Entorno
+Para información detallada sobre instalación, validación de funcionalidades y uso del sistema, consulta:
 
-| Variable | Valor por Defecto | Descripción |
-|----------|-------------------|-------------|
-| `OLLAMA_URL` | `http://localhost:11434` | URL del servicio Ollama |
+📖 **[Guía de Instalación y Uso Completa](./guide-installation.md)**
 
-### Cambiar el Modelo
-
-Edita `server/index.js` y cambia:
-```javascript
-model: "llama3.1:latest"
-```
-
-Por el modelo que prefieras (debe estar descargado en Ollama).
+Esta guía incluye:
+- Instalación paso a paso (local y con Docker)
+- Configuración del sistema
+- Pruebas completas de Training Prompts y RAG
+- Validación de funcionalidades
+- Ejemplos de uso con Postman y cURL
+- Integración con Frontend
+- Solución de problemas
 
 ---
 
-## 🛠 Desarrollo Local (Sin Docker)
+## 📊 Conclusiones
 
-Si prefieres ejecutar sin Docker:
+**AguiAI** representa una solución integral para asistencia académica que:
 
-1. **Instala Ollama**: https://ollama.ai/
-2. **Descarga el modelo**:
-   ```bash
-   ollama pull llama3.1:latest
-   ```
-3. **Instala dependencias**:
-   ```bash
-   cd server
-   npm install
-   ```
-4. **Ejecuta el servidor**:
-   ```bash
-   node index.js
-   ```
+✅ **Garantiza privacidad** mediante ejecución local de IA  
+✅ **Proporciona respuestas consistentes** con Training Prompts  
+✅ **Se actualiza fácilmente** mediante carga de PDFs  
+✅ **Escala eficientemente** con arquitectura modular  
+✅ **Funciona 24/7** sin intervención humana  
+✅ **Reduce carga administrativa** automatizando consultas frecuentes  
 
-El servidor detectará automáticamente `http://localhost:11434`.
+El sistema ha sido validado exitosamente en todas sus funcionalidades y está listo para despliegue en producción.
 
 ---
 
-## 📚 Módulos del Servidor
+## 📚 Referencias
 
-### `index.js`
-Servidor principal que maneja las peticiones HTTP y coordina los módulos.
-
-### `contextManager.js`
-Gestiona el historial de conversación:
-- `validateHistory()` - Valida el formato del historial
-- `buildMessages()` - Construye el array de mensajes para Ollama
-
-### `promptBuilder.js`
-Construye los prompts con instrucciones del sistema:
-- `getSystemInstructions()` - Retorna las instrucciones del sistema
-- `buildPrompt()` - Crea prompts para modo sin contexto
-
-### `responseFormatter.js`
-Estandariza las respuestas de la API:
-- `formatResponse()` - Formatea respuestas exitosas y de error
+- [Ollama Documentation](https://ollama.ai/)
+- [React Documentation](https://react.dev/)
+- [Node.js Documentation](https://nodejs.org/)
+- [RAG Paper](https://arxiv.org/abs/2005.11401)
+- [Llama 3.2 Model Card](https://ollama.ai/library/llama3.2)
 
 ---
 
-## 🐛 Solución de Problemas
+## 👥 Autores
 
-### El contenedor de Ollama no inicia
-```bash
-docker logs ollama
-```
-
-### La API no responde
-```bash
-docker logs server
-```
-
-### Reiniciar todo
-```bash
-docker compose down
-docker compose up -d --build
-```
+**Facultad de Informática Mazatlán**  
+Universidad Autónoma de Sinaloa
 
 ---
 
 ## 📄 Licencia
 
-Este proyecto es de código abierto y está disponible bajo la licencia MIT.
-
----
-
-## 🤝 Contribuciones
-
-Las contribuciones son bienvenidas. Por favor:
-
-1. Haz fork del proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
-
----
-
-## 👨‍💻 Autor
-
-**Héctor P. Osuna**  
-GitHub: [@HectorPOsuna](https://github.com/HectorPOsuna)
+Este proyecto está bajo la Licencia ISC.
