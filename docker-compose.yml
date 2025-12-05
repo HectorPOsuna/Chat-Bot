@@ -1,6 +1,16 @@
+# ============================================
+# DOCKER COMPOSE - AguiAI
+# Sistema de Asistente Académico Inteligente
+# ============================================
+
+version: '3.8'
+
 services:
+  # ==========================================
+  # OLLAMA - Motor de IA
+  # ==========================================
   ollama:
-    container_name: ollama
+    container_name: aguiai-ollama
     build:
       context: ./ollama
       dockerfile: Dockerfile
@@ -9,18 +19,36 @@ services:
       - "11434:11434"
     volumes:
       - ollama_data:/root/.ollama
+      - ollama_models:/models
     environment:
       OLLAMA_HOST: "0.0.0.0"
+      OLLAMA_KEEP_ALIVE: "24h"
+      OLLAMA_NUM_PARALLEL: "2"
     healthcheck:
       test: ["CMD-SHELL", "curl -sf http://localhost:11434/api/tags || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 12
       start_period: 40s
+    networks:
+      - aguiai-network
+    deploy:
+      resources:
+        limits:
+          memory: 8G
+        reservations:
+          memory: 4G
 
+  # ==========================================
+  # API - Backend Node.js
+  # ==========================================
   api:
-    container_name: server
-    build: ./server
+    container_name: aguiai-backend
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+      args:
+        NODE_ENV: production
     restart: unless-stopped
     ports:
       - "3000:3000"
@@ -28,9 +56,72 @@ services:
       ollama:
         condition: service_healthy
     environment:
+      NODE_ENV: production
       OLLAMA_URL: "http://ollama:11434"
+      PORT: 3000
     volumes:
-      - ./server:/usr/src/app
+      # Datos persistentes
+      - ./server/data:/usr/src/app/data
+      # Logs
+      - api_logs:/usr/src/app/logs
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:3000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    networks:
+      - aguiai-network
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 512M
 
+  # ==========================================
+  # FRONTEND - React Application (Opcional)
+  # ==========================================
+  frontend:
+    container_name: aguiai-frontend
+    build:
+      context: ./chat-frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: http://localhost:3000
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - aguiai-network
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+
+# ==========================================
+# VOLUMES - Almacenamiento Persistente
+# ==========================================
 volumes:
   ollama_data:
+    driver: local
+    name: aguiai_ollama_data
+  ollama_models:
+    driver: local
+    name: aguiai_ollama_models
+  api_logs:
+    driver: local
+    name: aguiai_api_logs
+
+# ==========================================
+# NETWORKS - Red Interna
+# ==========================================
+networks:
+  aguiai-network:
+    driver: bridge
+    name: aguiai-network
